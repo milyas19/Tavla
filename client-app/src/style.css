@@ -1,0 +1,147 @@
+  .tidsplanBody {
+    margin-top: 3.3rem;
+  }
+ 
+  .body {
+    font-size: 16pt;
+    color: black;
+  }
+
+  .tableHeader {
+    font-family:  "Fira Code", Georgia, 'Times New Roman', Times, serif;;
+    font-size: 1.3em;
+    font-weight: 800;
+    background-color: steelblue;
+  }
+  
+  tbody > tr > td {
+    font-family:  "Fira Code", Georgia, 'Times New Roman', Times, serif;;
+    font-weight: 600;
+    color: black;
+    border-style: solid;
+    border-color: steelblue;
+    border-width: 2px;
+  }
+
+  @media only screen and (max-width: 500px) {
+    .App-header{
+      width:500px;
+    }
+  }
+
+  @media only screen and (min-width: 500px) {
+    .App-header{
+      width:100%;
+    }
+  }
+
+  .banner {
+    background-color: black;
+    height: 3em;
+    color: bisque;
+    display: grid;
+
+  }
+  .Heading {
+    text-align: center;
+    padding-top: 0.2%;
+    font-weight: bold;
+    font-size: 1.2rem;
+    font-family: "Fira Code", Georgia, 'Times New Roman', Times, serif;
+    font-size: x-large;
+  }
+
+  .deleteButton{
+    background-color: orange !important;
+    margin-left: 5%;
+  }
+
+  .deleteButton :hover{
+    background-color: #dc3545 !important;
+    margin-left: 5%;
+  }
+
+  .leggeTil{
+    width: 100% !important;
+    font-family:  "Fira Code", Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.3em;
+    font-weight: 800;
+    background-color: slateblue;
+  }
+
+  .nyItem{
+    margin-top: 20px !important;
+    width: 100% !important;
+    height: 3rem !important;
+    font-family:  "Fira Code", Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.3em;
+    font-weight: 800;
+  }
+
+  .leggTilTxt{
+    width: 100% !important;
+    font-family:  "Fira Code", Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.3em;
+    font-weight: 800;
+  }
+
+  .navnControl{
+    display: flex;
+  }
+
+
+.aktivitetFormWrapper{
+  text-align: center;
+  margin-left: 30%;
+  margin-right: 30%;
+  background-color: yellowgreen;
+  z-index: 9;
+  color:black;
+  font-weight: bolder;
+} 
+
+.formHeading{
+  background-color: rgb(118, 170, 15);
+  height: 3rem;
+  font-family:  "Fira Code", Georgia, 'Times New Roman', Times, serif;
+  text-align: center;
+}
+.headingText{
+  font-size: x-large;
+  font-weight: bolder;
+  font-family:  "Fira Code", Georgia, 'Times New Roman', Times, serif;
+  vertical-align: sub;
+}
+.entityTypeDropdown{
+  width: 70%;
+}
+.aktivitet_DateInput{
+  width: 25%;
+}
+
+.aktivitet_TimeInput{
+  width: 18%;
+}
+
+.lableStyle{
+  padding-left: 20% !important;
+  padding-top: 0.7rem;
+}
+
+.lableStyleDato{
+  padding-left: 13.5% !important;
+  padding-top: 0.7rem;
+}
+
+.lableStyleTid{
+  padding-left:  1% !important;
+  padding-top: 0.7rem;
+}
+
+.entityTypeTextArea{
+  width: 70%;
+}
+
+.entityTypeTextArea1{
+  width: 100%;
+}
