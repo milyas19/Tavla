@@ -1,14 +1,17 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Data
 {
-    public class TidsplanContext : DbContext
+    public class TidsplanContext : IdentityDbContext<AppUser>
     {
 
         public DbSet<Tidsplan> Tidsplans { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<Vakt> Vakts { get; set; }
+
+
         public TidsplanContext(DbContextOptions options) : base(options)
         {
 

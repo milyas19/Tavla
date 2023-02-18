@@ -4,7 +4,7 @@ using Persistence.Data;
 
 namespace Persistence.Repository.TidsplanRepository
 {
-    public class AktivitetRepository : IAktivitetRepository<Tidsplan>
+    public class AktivitetRepository : IAktivitetRepository
     {
         private readonly TidsplanContext _dbContext;
 

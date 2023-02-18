@@ -3,12 +3,12 @@ using MediatR;
 using Persistence.Repository.TidsplanRepository;
 
 namespace Application.Command.OpprettAktivitet
-{ 
+{
     public class OpprettAktivitetCommandHandler : IRequestHandler<OpprettAktivitetCommand, OpprettetAktivitetDto>
     {
-        private readonly IAktivitetRepository<Tidsplan> _repo;
+        private readonly IAktivitetRepository _repo;
 
-        public OpprettAktivitetCommandHandler(IAktivitetRepository<Tidsplan> repo)
+        public OpprettAktivitetCommandHandler(IAktivitetRepository repo)
         {
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
@@ -19,7 +19,7 @@ namespace Application.Command.OpprettAktivitet
             {
                 Dato = request.Dto.Dato,
                 EndDato = request.Dto.EndDato,
-                PersonId = request.Dto.PersonId, 
+                PersonId = request.Dto.PersonId,
                 VaktId = request.Dto.VaktId,
                 Beskrivelse = request.Dto.Beskrivelse
             };
@@ -30,7 +30,7 @@ namespace Application.Command.OpprettAktivitet
             {
                 Id = aktivitet.Id,
                 Dato = aktivitet.Dato,
-                EndDato= aktivitet.EndDato,
+                EndDato = aktivitet.EndDato,
                 VaktId = aktivitet.VaktId,
                 PersonId = aktivitet.PersonId,
                 Beskrivelse = aktivitet.Beskrivelse

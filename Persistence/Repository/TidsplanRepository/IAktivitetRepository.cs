@@ -1,10 +1,12 @@
-﻿namespace Persistence.Repository.TidsplanRepository
+﻿using Entities;
+
+namespace Persistence.Repository.TidsplanRepository
 {
-    public interface IAktivitetRepository<T> where T : class
+    public interface IAktivitetRepository
     {
-        Task<T> HentAktivitetByIdAsync(int aktivitetId);
-        Task<List<T>> HentAktiviteterAsync();
-        Task<T> OpprettAktivitetAsync(T tidsplan);
+        Task<Tidsplan> HentAktivitetByIdAsync(int aktivitetId);
+        Task<List<Tidsplan>> HentAktiviteterAsync();
+        Task<Tidsplan> OpprettAktivitetAsync(Tidsplan tidsplan);
         Task<bool> SlettAktivitetAsync(int aktivitetId);
     }
 }

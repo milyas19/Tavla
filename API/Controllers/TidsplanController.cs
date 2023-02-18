@@ -3,11 +3,13 @@ using Application.Feature.Aktivitet.Command.SlettAktivitet;
 using Application.Query.HentAktivitetAvId;
 using Application.Query.HentAktiviteter;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
 
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
 
@@ -33,7 +35,6 @@ namespace API.Controllers
 
             return NotFound("No aktivitet in database. Please add an aktivitet first.");
         }
-
 
         [HttpGet]
         public async Task<IActionResult> HentAktiviteter()

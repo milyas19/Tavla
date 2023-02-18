@@ -4,13 +4,13 @@ using MediatR;
 using Persistence.Repository.TidsplanRepository;
 
 namespace Application.Query.HentAktiviteter
-{ 
+{
     public class HentAktiviteterQueryHandler : IRequestHandler<HentAktiviteterQuery, List<HentAktivitetDto>>
     {
-        private readonly IAktivitetRepository<Tidsplan> _repo;
+        private readonly IAktivitetRepository _repo;
         private readonly IMapper _mapper;
 
-        public HentAktiviteterQueryHandler(IAktivitetRepository<Tidsplan> repo, IMapper mapper)
+        public HentAktiviteterQueryHandler(IAktivitetRepository repo, IMapper mapper)
         {
             _repo = repo;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -27,6 +27,6 @@ namespace Application.Query.HentAktiviteter
 
     public class HentAktiviteterQuery : IRequest<List<HentAktivitetDto>>
     {
-        
+
     }
 }

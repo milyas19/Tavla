@@ -4,12 +4,12 @@ using MediatR;
 using Persistence.Repository.TidsplanRepository;
 
 namespace Application.Query.HentAktivitetAvId
-{ 
+{
     public class HentAktivitetAvIdQueryHandler : IRequestHandler<HentAktivitetQuery, HentAktivitetDto>
     {
-        private readonly IAktivitetRepository<Tidsplan> _repo;
+        private readonly IAktivitetRepository _repo;
 
-        public HentAktivitetAvIdQueryHandler(IAktivitetRepository<Tidsplan> repo)
+        public HentAktivitetAvIdQueryHandler(IAktivitetRepository repo)
         {
             _repo = repo;
         }
