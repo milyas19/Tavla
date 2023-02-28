@@ -3,12 +3,7 @@ import "semantic-ui-css/semantic.min.css";
 import { HomePage } from "./pages/HomePage";
 
 const App: React.FC = () => {
-  return (
-    <>
-      {/* <Toppmeny /> */}
-      <HomePage />
-    </>
-  );
+  return <HomePage />;
 };
 
 export default App;
