@@ -2,9 +2,11 @@
 using Application.Feature.Kodeverk.Query.HentVaktList;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/[controller]")]
     public class KodeverkController : ControllerBase

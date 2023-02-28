@@ -1,3 +1,4 @@
+using System.Net;
 using System.Security.Claims;
 using API.DTOs;
 using API.Services;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
@@ -21,9 +23,8 @@ namespace API.Controllers
             _userManager = userManager;
         }
 
-        [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
         {
             var user = await _userManager.Users
                 .FirstOrDefaultAsync(x => x.Email == loginDto.Email);
@@ -34,13 +35,12 @@ namespace API.Controllers
 
             if (result)
             {
-                return CreateUserObject(user);
+                return Ok(CreateUserObject(user));
             }
 
-            return Unauthorized();
+            return Unauthorized(CreateUnauthorizedUserObject(user));
         }
 
-        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
@@ -73,7 +73,6 @@ namespace API.Controllers
             return BadRequest(result.Errors);
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
@@ -83,13 +82,24 @@ namespace API.Controllers
             return CreateUserObject(user);
         }
 
-        private UserDto CreateUserObject(AppUser user)
+        private UserDto CreateUserObject(AppUser user) => new UserDto
+        {
+            DisplayName = user.DisplayName,
+            Token = _tokenService.CreateToken(user),
+            Username = user.UserName,
+            StatusCode = (int)HttpStatusCode.OK,
+            Success = true,
+        };
+
+        private UserDto CreateUnauthorizedUserObject(AppUser user)
         {
             return new UserDto
             {
-                DisplayName = user.DisplayName,
-                Token = _tokenService.CreateToken(user),
-                Username = user.UserName
+                DisplayName = null,
+                Token = null,
+                Username = null,
+                StatusCode = (int)HttpStatusCode.Unauthorized,
+                Success = false,
             };
         }
     }
