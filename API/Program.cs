@@ -23,6 +23,9 @@ builder.Services.AddControllers(opt =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+
 builder.Services.AddIdentityService(builder.Configuration);
 
 builder.Services.AddDbContext<TidsplanContext>
@@ -46,17 +49,28 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
+        c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+    });
+    app.MapGet("/swagger-ui/SwaggerDark.css", async (CancellationToken cancellationToken) =>
+    {
+        var css = await File.ReadAllBytesAsync("SwaggerDark.css", cancellationToken);
+        return Results.File(css, "text/css");
+    }).ExcludeFromDescription();
 }
+
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
 app.UseCors("corsapp");
 
-//check if its a valid user
+// check if its a valid user
 app.UseAuthentication();
 
-//then give authorization to specific page
+// then give authorization to specific page
 app.UseAuthorization();
 
 app.MapControllers();

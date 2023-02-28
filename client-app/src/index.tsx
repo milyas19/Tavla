@@ -1,7 +1,7 @@
 import ReactDOM from "react-dom/client";
 import { RecoilRoot } from "recoil";
 import App from "./App";
-import { AktivitetToastManager } from "./components/Util/AktivitetToastManager";
+import { AktivitetToastManager } from "./util/AktivitetToastManager";
 import "./index.css";
 
 const root = ReactDOM.createRoot(

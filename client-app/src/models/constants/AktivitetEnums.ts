@@ -18,4 +18,5 @@ export const constants = {
 
 export const datoTidFormat = {
   yearMonthDay: "yyyy-mm-dd",
+  fullDateTime: "DD.MM.YYYY HH:mm"
 }

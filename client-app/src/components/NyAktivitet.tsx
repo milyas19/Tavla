@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "./../../../src/style.css";
-import { constants } from "../../constants/AktivitetEnums";
-import AktivitetForm from "../AktivitetForm/AktivitetForm";
+import "./../../src/style.css";
+import { constants } from "../models/constants/AktivitetEnums";
+import AktivitetForm from "./AktivitetForm";
 import { Button } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
 
@@ -14,12 +14,7 @@ const NyAktivitet: React.FC = () => {
 
   return (
     <>
-      <Button
-        inverted
-        color="green"
-        className="nyItem"
-        onClick={() => addNewRecord(true)}
-      >
+      <Button inverted size="medium" onClick={() => addNewRecord(true)}>
         <span className="leggTilTxt">{constants.leggeTil}</span>
       </Button>
 

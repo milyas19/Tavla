@@ -1,4 +1,4 @@
-import { IAktiviteter } from './../components/View/TableView';
+import { IAktiviteter } from '../pages/TableView';
 import { atom } from "recoil";
 
 export const aktivitetListState = atom({
