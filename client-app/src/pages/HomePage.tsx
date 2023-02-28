@@ -31,23 +31,6 @@ export const HomePage: React.FC = () => {
     setPassord(e);
   };
 
-  // ====================================
-  // useEffect(() => {
-  //   const data = window.localStorage.getItem("user");
-  //   if (data !== null) {
-  //     setUser(JSON.parse(data));
-  //     setShowLoggedInMsg(true);
-  //     setShowLoggedOutBtn(true);
-  //     setShowNyAktivitetBtn(true);
-  //     setShowAktiviteterList(true);
-  //     setShowLoginWindow(false);
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   window.localStorage.setItem("user", JSON.stringify(user));
-  // }, [user]);
-  // =====================================
   useEffect(() => {
     const validUser = localStorage.getItem("user");
     if (validUser != null) {
