@@ -6,6 +6,7 @@ export interface IProps {
   showLoggedInMsg: boolean;
   showLoggedOutBtn: boolean;
   showNyAktivitetBtn: boolean;
+  user: any;
   setUser: (args: any) => void;
   setShowLoggedInMsg: (args: any) => void;
   setShowLoggedOutBtn: (args: any) => void;
@@ -24,8 +25,14 @@ export const Toppmeny: React.FC<IProps> = ({
   setShowAktiviteterList,
   setShowLoginWindow,
   setUser,
+  user,
 }) => {
   const FontAwesome = require("react-fontawesome");
+
+  debugger;
+
+  console.log("typeof user:", typeof user);
+  console.log("user:::::::::::::::", user);
 
   return (
     <Segment inverted textAlign="right" vertical className="masthead toppmeny">
@@ -46,7 +53,7 @@ export const Toppmeny: React.FC<IProps> = ({
             as="h5"
             className="welcomeBackMsg"
             inverted
-            content={`Welcome back ${"Ilyas"}!`}
+            content={`Welcome back ${user.displayName}!`}
           />
         ) : (
           <></>
