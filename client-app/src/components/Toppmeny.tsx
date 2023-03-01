@@ -29,11 +29,6 @@ export const Toppmeny: React.FC<IProps> = ({
 }) => {
   const FontAwesome = require("react-fontawesome");
 
-  debugger;
-
-  console.log("typeof user:", typeof user);
-  console.log("user:::::::::::::::", user);
-
   return (
     <Segment inverted textAlign="right" vertical className="masthead toppmeny">
       <Header as="h2" className="siteHeader">

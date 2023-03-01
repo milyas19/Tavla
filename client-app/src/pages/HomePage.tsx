@@ -83,7 +83,6 @@ export const HomePage: React.FC = () => {
       })
       .catch((error) => Toast.Error("An error occured while login ", error));
   };
-  console.log(typeof user);
   return (
     <>
       {user != null ? (
