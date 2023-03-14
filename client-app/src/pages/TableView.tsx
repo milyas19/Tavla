@@ -6,7 +6,7 @@ import "@fontsource/fira-code";
 import Table from "semantic-ui-react/dist/commonjs/collections/Table";
 import Toast from "../util/AktivitetToastManager";
 import { useRecoilState } from "recoil";
-import { aktivitetListState } from "../store/aktivitetListState";
+import { aktivitetListState } from "../store/AktivitetListState";
 import { datoTidFormat } from "../models/constants/AktivitetEnums";
 
 export interface IAktiviteter {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { Button, Form } from "semantic-ui-react";
-import { aktivitetListState } from "../store/aktivitetListState";
+import { aktivitetListState } from "../store/AktivitetListState";
 import TableView from "./TableView";
 import { Toppmeny } from "../components/Toppmeny";
 import * as EmailValidator from "email-validator";

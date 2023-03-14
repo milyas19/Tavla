@@ -1,0 +1,6 @@
+{
+    //graphql globs
+    "$schema": [
+        "src/graphql/**/*.gql"
+    ]
+}
