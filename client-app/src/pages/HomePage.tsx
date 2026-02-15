@@ -19,6 +19,7 @@ export const HomePage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [passord, setPassord] = useState("");
   const [user, setUser] = useState();
+  const [activePanel, setActivePanel] = useState<"aktiviteter" | "vaer" | "ruter">("aktiviteter");
 
   const handleEmail = (e: any) => {
     setEmail(e);
@@ -83,7 +84,7 @@ export const HomePage: React.FC = () => {
       .catch((error) => Toast.Error("An error occured while login ", error));
   };
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 space-y-8">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8">
       {user ? (
         <Toppmeny
           showLoggedInMsg={showLoggedInMsg}
@@ -102,7 +103,7 @@ export const HomePage: React.FC = () => {
           <p className="text-sm uppercase tracking-[0.4em] text-emerald-200/80">
             Tavla
           </p>
-          <h1 className="text-3xl font-bold text-white">Velkommen tilbake</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Velkommen tilbake</h1>
           <p className="text-sm text-slate-300 max-w-2xl">
             Logg inn for å planlegge ansvar, holde orden på rutetider og følge
             værmeldingen i én samlet oversikt. Hele opplevelsen er nå redesignet
@@ -119,7 +120,7 @@ export const HomePage: React.FC = () => {
                 <p className="text-xs uppercase tracking-[0.2em] text-emerald-300/80">
                   Autentisering
                 </p>
-                <h2 className="text-xl font-semibold text-white">Logg inn</h2>
+                <h2 className="text-lg sm:text-xl font-semibold text-white">Logg inn</h2>
               </div>
               <span className="rounded-full bg-emerald-400/20 px-3 py-1 text-xs text-emerald-100">
                 Sikker tilgang
@@ -179,51 +180,94 @@ export const HomePage: React.FC = () => {
       ) : null}
 
       {showAktiviteterList ? (
-        <div className="grid auto-rows-fr gap-6 lg:grid-cols-3 items-stretch">
-          <section className="space-y-3 h-full flex flex-col">
+        <div className="space-y-4">
+          <div className="sm:hidden grid grid-cols-3 gap-2">
+            <button
+              className={
+                activePanel === "aktiviteter"
+                  ? "primary-btn w-full"
+                  : "ghost-btn w-full"
+              }
+              onClick={() => setActivePanel("aktiviteter")}
+            >
+              Aktiviteter
+            </button>
+            <button
+              className={
+                activePanel === "vaer" ? "primary-btn w-full" : "ghost-btn w-full"
+              }
+              onClick={() => setActivePanel("vaer")}
+            >
+              Vær
+            </button>
+            <button
+              className={
+                activePanel === "ruter" ? "primary-btn w-full" : "ghost-btn w-full"
+              }
+              onClick={() => setActivePanel("ruter")}
+            >
+              Ruter
+            </button>
+          </div>
+
+          <div className="grid auto-rows-fr gap-6 lg:grid-cols-3 items-stretch">
+            <section
+              className={`space-y-3 h-full flex flex-col ${
+                activePanel !== "aktiviteter" ? "hidden sm:flex" : "flex"
+              }`}
+            >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-emerald-300/80">
                   Plan
                 </p>
-                <h3 className="text-2xl font-semibold text-white">Aktiviteter</h3>
+                <h3 className="text-xl sm:text-2xl font-semibold text-white">Aktiviteter</h3>
               </div>
               <span className="text-sm text-slate-300">
                 Synkroniserte tider og ansvar
               </span>
             </div>
-            <div className="flex-1">
+            <div className="flex-1 max-h-[60vh] sm:max-h-none overflow-auto">
               <TableView />
             </div>
           </section>
 
-          <section className="space-y-3 h-full flex flex-col">
+          <section
+            className={`space-y-3 h-full flex flex-col ${
+              activePanel !== "vaer" ? "hidden sm:flex" : "flex"
+            }`}
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-emerald-300/80">
                   Vær
                 </p>
-                <h3 className="text-xl font-semibold text-white">Nåværende</h3>
+                <h3 className="text-lg sm:text-xl font-semibold text-white">Nåværende</h3>
               </div>
             </div>
-            <div className="card-surface flex-1 min-h-[24rem]">
+            <div className="card-surface flex-1 min-h-[18rem] sm:min-h-[24rem]">
               <WeatherReport />
             </div>
           </section>
 
-          <section className="space-y-3 h-full flex flex-col">
+          <section
+            className={`space-y-3 h-full flex flex-col ${
+              activePanel !== "ruter" ? "hidden sm:flex" : "flex"
+            }`}
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-emerald-300/80">
                   Kollektiv
                 </p>
-                <h3 className="text-xl font-semibold text-white">Ruter</h3>
+                <h3 className="text-lg sm:text-xl font-semibold text-white">Ruter</h3>
               </div>
             </div>
-            <div className="card-surface flex-1 min-h-[24rem]">
+            <div className="card-surface flex-1 min-h-[18rem] sm:min-h-[24rem]">
               <RuterTavla />
             </div>
           </section>
+          </div>
         </div>
       ) : null}
     </div>

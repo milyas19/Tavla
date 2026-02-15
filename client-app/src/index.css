@@ -1,31 +1,84 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 :root {
   color-scheme: dark;
 }
 
 body {
-  @apply bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 font-mono min-h-screen;
+  background-image: linear-gradient(to bottom right, #020617, #0f172a, #020617);
+  color: #f1f5f9;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  min-height: 100vh;
 }
 
 #root {
-  @apply min-h-screen;
+  min-height: 100vh;
 }
 
 .glass {
-  @apply bg-white/5 border border-white/10 backdrop-blur-lg shadow-glass;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.35);
 }
 
 .card-surface {
-  @apply glass rounded-2xl p-6;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .card-surface {
+    padding: 1.5rem;
+  }
 }
 
 .primary-btn {
-  @apply inline-flex items-center justify-center rounded-xl bg-emerald-400 px-4 py-2 text-slate-900 font-semibold shadow-lg shadow-emerald-400/20 transition hover:-translate-y-0.5 hover:shadow-emerald-400/30;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background-color: #34d399;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  color: #0f172a;
+  font-weight: 600;
+  box-shadow: 0 10px 20px rgba(52, 211, 153, 0.2);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+@media (min-width: 640px) {
+  .primary-btn {
+    font-size: 1rem;
+  }
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(52, 211, 153, 0.3);
 }
 
 .ghost-btn {
-  @apply inline-flex items-center justify-center rounded-xl border border-white/10 px-4 py-2 text-slate-100 transition hover:border-emerald-300/70 hover:text-emerald-200;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  color: #f1f5f9;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+@media (min-width: 640px) {
+  .ghost-btn {
+    font-size: 1rem;
+  }
+}
+
+.ghost-btn:hover {
+  border-color: rgba(110, 231, 183, 0.7);
+  color: #a7f3d0;
 }
