@@ -52,7 +52,7 @@ const AktivitetForm: React.FC<IAktivitetFormProps> = ({
         setVaktList(json);
       })
       .catch((error) => {
-        Toast.Error("Error while fetching vakt from server", error);
+        Toast.Error("Error while fetching ansvar from server", error);
       });
   }, []);
 
@@ -160,7 +160,7 @@ const AktivitetForm: React.FC<IAktivitetFormProps> = ({
               Legg til en hendelse
             </h3>
             <p className="text-sm text-slate-300">
-              Velg navn, vakt, tidspunkt og legg ved en kort beskrivelse.
+              Velg navn, ansvar, tidspunkt og legg ved en kort beskrivelse.
             </p>
           </div>
           <button
@@ -196,7 +196,7 @@ const AktivitetForm: React.FC<IAktivitetFormProps> = ({
             </label>
 
             <label className="space-y-2 text-sm text-slate-200">
-              Vakt
+              Ansvar
               <select
                 name="vaktTypeId"
                 value={vakt}
@@ -204,7 +204,7 @@ const AktivitetForm: React.FC<IAktivitetFormProps> = ({
                 className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white outline-none transition focus:border-emerald-300/80 focus:bg-white/10"
                 required
               >
-                <option value={0}>Velg vakt</option>
+                <option value={0}>Velg ansvar</option>
                 {vaktList?.map((v: Vakt) => (
                   <option key={v.id} value={v.id}>
                     {v.vaktType}

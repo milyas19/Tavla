@@ -6,5 +6,6 @@ namespace Persistence.Repository.KodeverkRepository
     {
         Task<List<Person>> HentNavnList();
         Task<List<Vakt>> HentVaktList();
+        Task<Vakt> OpprettVakt(Vakt vakt);
     }
 }

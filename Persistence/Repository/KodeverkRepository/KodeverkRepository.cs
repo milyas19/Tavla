@@ -21,5 +21,12 @@ namespace Persistence.Repository.KodeverkRepository
         {
             return await _dbContext.Vakts.ToListAsync();
         }
+
+        public async Task<Vakt> OpprettVakt(Vakt vakt)
+        {
+            _dbContext.Vakts.Add(vakt);
+            await _dbContext.SaveChangesAsync();
+            return vakt;
+        }
     }
 }

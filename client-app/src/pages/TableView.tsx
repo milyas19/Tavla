@@ -61,7 +61,7 @@ const TableView: React.FC = () => {
     fetch(BaseApiUrlVakt)
       .then((response) => response.json())
       .then((json) => setVaktList(json))
-      .catch((error) => Toast.Error("Feil ved henting av vakt", error));
+      .catch((error) => Toast.Error("Feil ved henting av ansvar", error));
   }, []);
 
   const AktivitetKort = (
@@ -288,7 +288,7 @@ const TableView: React.FC = () => {
                     </label>
 
                     <label className="space-y-1 text-sm text-slate-200">
-                      Vakt
+                      Ansvar
                       <select
                         value={editState.vaktId}
                         onChange={(e) => setEditState({ ...editState, vaktId: Number(e.target.value) })}
