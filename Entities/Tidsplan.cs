@@ -8,5 +8,5 @@ public class Tidsplan
     public int PersonId { get; set; }
     public Vakt Vakt { get; set; }
     public int VaktId { get; set; }
-    public string Beskrivelse { get; set; }
+    public string? Beskrivelse { get; set; }
 }

@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System;
 
 namespace API.Services
 {
@@ -16,6 +17,12 @@ namespace API.Services
         }
         public string CreateToken(AppUser user)
         {
+            var tokenKey = _config["TokenKey"] ?? throw new InvalidOperationException("TokenKey is not configured.");
+            if (Encoding.UTF8.GetByteCount(tokenKey) < 64)
+            {
+                throw new InvalidOperationException("TokenKey must be at least 64 bytes for HmacSha512Signature.");
+            }
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.UserName),
@@ -23,7 +30,7 @@ namespace API.Services
                 new Claim(ClaimTypes.Email, user.Email),
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["TokenKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor

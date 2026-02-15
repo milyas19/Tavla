@@ -11,7 +11,6 @@
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
-    "@types/semantic-ui": "^2.2.7",
     "dateformat": "^5.0.3",
     "email-validator": "^2.0.4",
     "formik": "^2.2.9",
@@ -23,9 +22,6 @@
     "react-hot-toast": "^2.4.0",
     "react-scripts": "^5.0.1",
     "recoil": "^0.7.6",
-    "semantic-ui-calendar-react": "^0.15.3",
-    "semantic-ui-css": "^2.5.0",
-    "semantic-ui-react": "^2.1.4",
     "stream-consumers": "^1.0.2",
     "styled-components": "^5.3.6",
     "typescript": "^4.4.2",
@@ -59,6 +55,9 @@
   "devDependencies": {
     "@types/babel__core": "^7.20.0",
     "@types/dateformat": "^5.0.0",
-    "@types/styled-components": "^5.1.26"
+    "@types/styled-components": "^5.1.26",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14"
   }
 }

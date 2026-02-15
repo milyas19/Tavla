@@ -1,12 +1,8 @@
 import dateFormat from "dateformat";
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import moment from "moment";
-import { Form, TextArea, Button, Icon, Header, Modal } from "semantic-ui-react";
-import "../../src/style.css";
-import "semantic-ui-css/semantic.min.css";
-import { DateInput, TimeInput } from "semantic-ui-calendar-react";
 import { Person, Vakt } from "../models/Entities";
-import styled from "styled-components";
 import Toast from "../util/AktivitetToastManager";
 
 export interface IAktivitetFormProps {
@@ -32,10 +28,10 @@ const AktivitetForm: React.FC<IAktivitetFormProps> = ({
   const [vakt, setVakt] = useState(0);
 
   useEffect(() => {
-    let startDatoObj = new Date();
-    setStartDato(moment(startDatoObj).format("DD.MM.YYYY"));
-    setTidFra(dateFormat(new Date(), "HH:MM"));
-    setTidTil(dateFormat(new Date(), "HH:MM"));
+    const now = new Date();
+    setStartDato(moment(now).format("YYYY-MM-DD"));
+    setTidFra(dateFormat(now, "HH:MM"));
+    setTidTil(dateFormat(now, "HH:MM"));
   }, []);
 
   useEffect(() => {
@@ -61,17 +57,17 @@ const AktivitetForm: React.FC<IAktivitetFormProps> = ({
   }, []);
 
   const handleChangeTidFra = (e: any, result: any) => {
-    const newfraTid = result.value;
+    const newfraTid = result.target ? result.target.value : result.value;
     setTidFra(newfraTid);
   };
 
   const handleChangeTidTil = (e: any, result: any) => {
-    const newtilTid = result.value;
+    const newtilTid = result.target ? result.target.value : result.value;
     setTidTil(newtilTid);
   };
 
   const handleChangeDate = (e: any, result: any) => {
-    const newStartDato = result.value;
+    const newStartDato = result.target ? result.target.value : result.value;
     setStartDato(newStartDato);
   };
 
@@ -90,7 +86,7 @@ const AktivitetForm: React.FC<IAktivitetFormProps> = ({
     );
     const aktivitetObj = { ...avtaleFromFormData };
 
-    if (Number(aktivitetObj.personNavnId) === 1) {
+    if (!aktivitetObj.personNavnId || Number(aktivitetObj.personNavnId) <= 0) {
       return Toast.Error(
         "Vennligst velg ett navn før du registrere aktivitet",
         aktivitetObj.personNavnId
@@ -103,19 +99,15 @@ const AktivitetForm: React.FC<IAktivitetFormProps> = ({
   const updateAktivitet = (aktivitetObj: any) => {
     if (!aktivitetObj) return;
 
-    let datoObj = moment(aktivitetObj?.startDato, "DD.MM.YYYY").format(
-      "YYYY.MM.DD"
+    let datoObj = moment(aktivitetObj?.startDato, "YYYY-MM-DD").format(
+      "YYYY-MM-DD"
     );
 
     let fraTime = aktivitetObj?.fra + ":00";
-    let startDatoObj = moment(new Date(datoObj + " " + fraTime)).toISOString(
-      true
-    );
+    let startDatoObj = moment(new Date(datoObj + " " + fraTime)).toISOString(true);
 
     let tilTime = aktivitetObj?.til + ":00";
-    let sluttDatoObj = moment(new Date(datoObj + " " + tilTime)).toISOString(
-      true
-    );
+    let sluttDatoObj = moment(new Date(datoObj + " " + tilTime)).toISOString(true);
 
     const payload = {
       PersonId: aktivitetObj.personNavnId,
@@ -156,150 +148,150 @@ const AktivitetForm: React.FC<IAktivitetFormProps> = ({
     handleClose();
   };
 
-  return (
-    <Modal open={aktivitetFormProps} onClose={() => addNewRecord(false)}>
-      <Header
-        icon="calendar"
-        className="formHeading headingText"
-        content="Legge til aktivitet"
-      />
-      <Modal.Content>
-        <Form onSubmit={(formdata) => handleSubmitAktivitet(formdata)}>
-          <Form.Group className="entityTypeDropdown">
-            <Form.Field className="lableStyle">Navn:</Form.Field>
-            <select
-              name="personNavnId"
-              value={navn}
-              id="navnDropdown"
-              onChange={(e) => handleSelectNavn(Number(e.target.value))}
-            >
-              {navnList?.map((n: Person) => (
-                <option key={n.id} value={n.id}>
-                  {n.navn}
-                </option>
-              ))}
-            </select>
-          </Form.Group>
-          <Form.Group className="entityTypeDropdown">
-            <Form.Field className="lableStyle">Vakt:</Form.Field>
-            <select
-              name="vaktTypeId"
-              value={vakt}
-              id="vaktDropdown"
-              onChange={(e) => handleSelectVaktType(Number(e.target.value))}
-            >
-              {vaktList?.map((v: Vakt) => (
-                <option key={v.id} value={v.id}>
-                  {v.vaktType}
-                </option>
-              ))}
-            </select>
-          </Form.Group>
-          <Form.Group>
-            <Form.Field className="lableStyleDato">Dato:</Form.Field>
-            <Form.Field
-              control={DateInput}
-              required={true}
-              className="aktivitet_DateInput"
-              name="startDato"
-              localization="no"
-              placeholder="Dato"
-              value={
-                startDato
-                  ? moment(startDato, [moment.ISO_8601, "DD.MM.YYYY"]).format(
-                      "DD.MM.YYYY"
-                    )
-                  : ""
-              }
-              iconPosition="left"
-              onChange={(e: any, result: any) => handleChangeDate(e, result)}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Field className="lableStyleFraTid">Fra:</Form.Field>
-            <Form.Field
-              className="aktivitet_TimeInput"
-              required={true}
-              control={TimeInput}
-              name="fra"
-              localization="no"
-              placeholder="Fra"
-              value={
-                tidFra
-                  ? moment(tidFra, [moment.ISO_8601, "HH:mm"]).format("HH:mm")
-                  : ""
-              }
-              iconPosition="left"
-              onChange={(e: any, result: any) => handleChangeTidFra(e, result)}
-            />
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/70 p-4 pt-12">
+      <div className="card-surface w-full max-w-2xl space-y-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-emerald-300/80">
+              Ny aktivitet
+            </p>
+            <h3 className="text-2xl font-semibold text-white">
+              Legg til en hendelse
+            </h3>
+            <p className="text-sm text-slate-300">
+              Velg navn, vakt, tidspunkt og legg ved en kort beskrivelse.
+            </p>
+          </div>
+          <button
+            className="ghost-btn h-10 w-10 justify-center rounded-full"
+            onClick={(e: any) => {
+              e.preventDefault();
+              handleClose();
+            }}
+            aria-label="Lukk"
+          >
+            ✕
+          </button>
+        </div>
 
-            <Form.Field className="lableStyleTilTid">Til:</Form.Field>
-            <Form.Field
-              className="aktivitet_TimeInput"
-              required={true}
-              control={TimeInput}
-              name="til"
-              localization="no"
-              placeholder="Til"
-              value={
-                tidTil
-                  ? moment(tidTil, [moment.ISO_8601, "HH:mm"]).format("HH:mm")
-                  : ""
-              }
-              iconPosition="left"
-              onChange={(e: any, result: any) => handleChangeTidTil(e, result)}
-            />
-          </Form.Group>
-          <Form.Group className="entityTypeTextArea">
-            <Form.Field className="lableBeskrivelseStyle">
-              Beskrivelse:
-            </Form.Field>
-            <TextArea
-              className="entityTypeTextArea1"
+        <form className="space-y-5" onSubmit={(formdata) => handleSubmitAktivitet(formdata)}>
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="space-y-2 text-sm text-slate-200">
+              Navn
+              <select
+                name="personNavnId"
+                value={navn}
+                onChange={(e) => handleSelectNavn(Number(e.target.value))}
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white outline-none transition focus:border-emerald-300/80 focus:bg-white/10"
+                required
+              >
+                <option value={0}>Velg navn</option>
+                {navnList?.map((n: Person) => (
+                  <option key={n.id} value={n.id}>
+                    {n.navn}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="space-y-2 text-sm text-slate-200">
+              Vakt
+              <select
+                name="vaktTypeId"
+                value={vakt}
+                onChange={(e) => handleSelectVaktType(Number(e.target.value))}
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white outline-none transition focus:border-emerald-300/80 focus:bg-white/10"
+                required
+              >
+                <option value={0}>Velg vakt</option>
+                {vaktList?.map((v: Vakt) => (
+                  <option key={v.id} value={v.id}>
+                    {v.vaktType}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            <label className="space-y-2 text-sm text-slate-200">
+              Dato
+              <input
+                type="date"
+                name="startDato"
+                value={
+                  startDato
+                    ? moment(startDato, [moment.ISO_8601, "YYYY-MM-DD", "DD.MM.YYYY"]).format("YYYY-MM-DD")
+                    : ""
+                }
+                onChange={(e) => handleChangeDate(e, e)}
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white outline-none transition focus:border-emerald-300/80 focus:bg-white/10"
+                required
+              />
+            </label>
+
+            <label className="space-y-2 text-sm text-slate-200">
+              Fra
+              <input
+                type="time"
+                name="fra"
+                value={
+                  tidFra
+                    ? moment(tidFra, [moment.ISO_8601, "HH:mm", "HH:MM"]).format("HH:mm")
+                    : ""
+                }
+                onChange={(e) => handleChangeTidFra(e, e)}
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white outline-none transition focus:border-emerald-300/80 focus:bg-white/10"
+                required
+              />
+            </label>
+
+            <label className="space-y-2 text-sm text-slate-200">
+              Til
+              <input
+                type="time"
+                name="til"
+                value={
+                  tidTil
+                    ? moment(tidTil, [moment.ISO_8601, "HH:mm", "HH:MM"]).format("HH:mm")
+                    : ""
+                }
+                onChange={(e) => handleChangeTidTil(e, e)}
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white outline-none transition focus:border-emerald-300/80 focus:bg-white/10"
+                required
+              />
+            </label>
+          </div>
+
+          <label className="block space-y-2 text-sm text-slate-200">
+            Beskrivelse
+            <textarea
               name="beskrivelse"
               placeholder="Skriv her ..."
+              className="h-28 w-full resize-none rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white outline-none transition focus:border-emerald-300/80 focus:bg-white/10"
             />
-          </Form.Group>
-          <EventFormButton>
-            <Button
-              style={{
-                backgroundColor: "#eee",
-                border: "2px solid hsl(212, 53%, 79%)",
-                marginBottom: "3rem",
-                marginLeft: "-16%",
-              }}
+          </label>
+
+          <div className="flex items-center justify-end gap-3">
+            <button
+              className="ghost-btn"
               onClick={(e: any) => {
                 e.preventDefault();
                 handleClose();
               }}
             >
-              <Icon name="remove" /> Avbryt
-            </Button>
-            <Form.Field
-              control={Button}
-              style={{
-                backgroundColor: "steelblue",
-                color: "#000",
-                border: "2px solid hsl(212, 53%, 79%)",
-                marginBottom: "3rem",
-                marginLeft: "-16%",
-              }}
-            >
-              <Icon name="checkmark" /> Lagre
-            </Form.Field>
-          </EventFormButton>
-        </Form>
-        {/* </div> */}
-      </Modal.Content>
-    </Modal>
+              Avbryt
+            </button>
+            <button type="submit" className="primary-btn">
+              Lagre
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>,
+    document.body
   );
 };
-
-const EventFormButton = styled.div`
-  display: flex;
-  float: right;
-  vertical-align: center;
-  margin-top: 3rem;
-`;
 
 export default AktivitetForm;

@@ -1,9 +1,31 @@
-body {
-  background-color:steelblue !important;
-  font-family:  "Fira Code";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
 }
 
-code {
-  font-family:  "Fira Code", source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  @apply bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 font-mono min-h-screen;
+}
+
+#root {
+  @apply min-h-screen;
+}
+
+.glass {
+  @apply bg-white/5 border border-white/10 backdrop-blur-lg shadow-glass;
+}
+
+.card-surface {
+  @apply glass rounded-2xl p-6;
+}
+
+.primary-btn {
+  @apply inline-flex items-center justify-center rounded-xl bg-emerald-400 px-4 py-2 text-slate-900 font-semibold shadow-lg shadow-emerald-400/20 transition hover:-translate-y-0.5 hover:shadow-emerald-400/30;
+}
+
+.ghost-btn {
+  @apply inline-flex items-center justify-center rounded-xl border border-white/10 px-4 py-2 text-slate-100 transition hover:border-emerald-300/70 hover:text-emerald-200;
 }
