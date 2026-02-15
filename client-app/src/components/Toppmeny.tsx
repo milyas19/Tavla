@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useRecoilState } from "recoil";
+import React, { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
 import {
-  WeatherFirstElementOfDayStore,
   WeatherStore,
 } from "../store/WeatherStore";
 import NyAktivitet from "./NyAktivitet";
@@ -20,8 +19,6 @@ export interface IProps {
 }
 
 const api = {
-  key: "a50d659259b7323fd439a773cbd13192",
-  base: "https://api.openweathermap.org/data/2.5/",
   baseImg: "http://openweathermap.org/img/w/",
 };
 
@@ -37,129 +34,133 @@ export const Toppmeny: React.FC<IProps> = ({
   setUser,
   user,
 }) => {
-  const [query, setQuery] = useState("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, setWeatherFirstElementOfDayStore] = useRecoilState(
-    WeatherFirstElementOfDayStore
-  );
-  const [weatherStore, setWeatherStore] = useRecoilState(WeatherStore);
+  const [showMenu, setShowMenu] = useState(false);
+  const weatherStore = useRecoilValue(WeatherStore);
   const [updateIcon, setUpdateIcon] = useState("");
   const currentWeather = weatherStore?.list?.[0];
 
   useEffect(() => {
-    fetch(`${api.base}forecast?q=oslo&units=metric&APPID=${api.key}`)
-      .then((response) => response.json())
-      .then((result) => {
-        const hasList = Array.isArray(result?.list) && result.list.length > 0;
-        if (!hasList) return;
-
-        setWeatherFirstElementOfDayStore(
-          result.list.filter(function (_value: any, index: any) {
-            return index % 8 === 0;
-          })
-        );
-        setQuery("");
-        setWeatherStore(result);
-        setUpdateIcon(result.list[0]?.weather?.[0]?.icon ?? "");
-      });
-  }, [setWeatherFirstElementOfDayStore, setWeatherStore]);
-
-  const search = (event: any) => {
-    if (event.key === "Enter") {
-      fetch(`${api.base}forecast?q=${query}&units=metric&APPID=${api.key}`)
-        .then((response) => response.json())
-        .then((result) => {
-          const hasList = Array.isArray(result?.list) && result.list.length > 0;
-          if (!hasList) {
-            console.warn("Fant ingen værdata for", query, result?.message);
-            return;
-          }
-
-          setWeatherFirstElementOfDayStore(
-            result.list.filter(function (_value: any, index: any) {
-              return index % 8 === 0;
-            })
-          );
-          setQuery("");
-          setWeatherStore(result);
-          setUpdateIcon(result.list[0]?.weather?.[0]?.icon ?? "");
-        });
-    }
-  };
+    setUpdateIcon(currentWeather?.weather?.[0]?.icon ?? "");
+  }, [currentWeather]);
 
   return (
-    <div className="card-surface flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-      <div className="flex items-center gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-400/20 text-emerald-200">
-          <span className="text-2xl">📅</span>
+    <div className="card-surface relative flex flex-col gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-400/20 text-emerald-200">
+            <span className="text-xl">📅</span>
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-emerald-300/80">
+              Tidsplan
+            </p>
+            <h2 className="text-xl sm:text-2xl font-semibold text-white">Daglig oversikt</h2>
+            {showLoggedInMsg && (
+              <p className="text-xs sm:text-sm text-slate-300">Velkommen tilbake {user.displayName}</p>
+            )}
+          </div>
         </div>
-        <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-emerald-300/80">
-            Tidsplan
-          </p>
-          <h2 className="text-2xl font-semibold text-white">Daglig oversikt</h2>
-          {showLoggedInMsg && (
-            <p className="text-sm text-slate-300">Velkommen tilbake {user.displayName}</p>
+
+        <div className="flex items-center gap-2">
+          {showNyAktivitetBtn ? <div className="hidden sm:block"><NyAktivitet /></div> : null}
+
+          {showLoggedOutBtn ? (
+            <button
+              className="ghost-btn hidden sm:inline-flex"
+              onClick={() => {
+                setShowLoggedInMsg(false);
+                setShowLoggedOutBtn(false);
+                setShowNyAktivitetBtn(false);
+                setShowAktiviteterList(false);
+                setShowLoginWindow(true);
+                setUser({});
+                localStorage.clear();
+              }}
+            >
+              Logg ut
+            </button>
+          ) : null}
+
+          <div className="hidden sm:flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+            <div className="text-right text-xs">
+              <div className="text-white">{weatherStore?.city?.name}</div>
+              {currentWeather?.main?.temp && (
+                <div className="text-emerald-200 font-semibold">
+                  {Math.round(currentWeather.main.temp)}°C
+                </div>
+              )}
+            </div>
+            {updateIcon ? (
+              <img
+                className="h-8 w-8"
+                src={`${api.baseImg}${updateIcon}.png`}
+                alt={currentWeather?.weather?.[0]?.main || "vær"}
+              />
+            ) : null}
+          </div>
+
+          {(showNyAktivitetBtn || showLoggedOutBtn) && (
+            <button
+              className="ghost-btn sm:hidden px-3"
+              aria-label="Åpne meny"
+              onClick={() => setShowMenu((prev) => !prev)}
+            >
+              ☰
+            </button>
           )}
         </div>
       </div>
 
-      <div className="flex flex-1 flex-wrap items-center justify-end gap-3">
-        <div className="relative w-full max-w-xs">
-          <input
-            type="text"
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white outline-none transition focus:border-emerald-300/80 focus:bg-white/10"
-            placeholder="Velg lokasjon..."
-            onChange={(e) => setQuery(e.target.value)}
-            value={query}
-            onKeyDown={search}
-          />
-          <span className="pointer-events-none absolute right-3 top-2 text-slate-400">⏎</span>
+      {showMenu && (showNyAktivitetBtn || showLoggedOutBtn) ? (
+        <div className="sm:hidden absolute right-4 top-20 z-20 w-52 rounded-xl border border-white/10 bg-slate-900/95 p-3 shadow-xl">
+          <div className="flex flex-col gap-2">
+            {showNyAktivitetBtn ? <NyAktivitet /> : null}
+            {showLoggedOutBtn ? (
+              <button
+                className="ghost-btn w-full"
+                onClick={() => {
+                  setShowLoggedInMsg(false);
+                  setShowLoggedOutBtn(false);
+                  setShowNyAktivitetBtn(false);
+                  setShowAktiviteterList(false);
+                  setShowLoginWindow(true);
+                  setUser({});
+                  localStorage.clear();
+                }}
+              >
+                Logg ut
+              </button>
+            ) : null}
+          </div>
         </div>
+      ) : null}
 
-        {showNyAktivitetBtn ? <NyAktivitet /> : null}
-
-        {showLoggedOutBtn ? (
-          <button
-            className="ghost-btn"
-            onClick={() => {
-              setShowLoggedInMsg(false);
-              setShowLoggedOutBtn(false);
-              setShowNyAktivitetBtn(false);
-              setShowAktiviteterList(false);
-              setShowLoginWindow(true);
-              setUser({});
-              localStorage.clear();
-            }}
-          >
-            Logg ut
-          </button>
-        ) : null}
-
-        <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-          <div className="text-right text-sm">
+      <div className="flex flex-wrap items-center gap-3 sm:hidden">
+        <div className="flex w-full items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+          <div className="text-sm">
             <div className="text-white">{weatherStore?.city?.name}</div>
-            <div className="text-slate-300">{weatherStore?.city?.country}</div>
+            <div className="text-slate-300 text-xs">{weatherStore?.city?.country}</div>
             {currentWeather?.main?.temp && (
-              <div className="text-emerald-200 font-semibold">
+              <div className="text-emerald-200 font-semibold text-sm">
                 {Math.round(currentWeather.main.temp)}°C
               </div>
             )}
             {currentWeather?.weather?.[0]?.description && (
-              <div className="text-slate-400 capitalize">
+              <div className="text-slate-400 capitalize text-xs">
                 {currentWeather.weather[0].description}
               </div>
             )}
           </div>
           {updateIcon ? (
             <img
-              className="h-12 w-12"
+              className="h-10 w-10"
               src={`${api.baseImg}${updateIcon}.png`}
               alt={currentWeather?.weather?.[0]?.main || "vær"}
             />
           ) : null}
         </div>
       </div>
+
     </div>
   );
 };

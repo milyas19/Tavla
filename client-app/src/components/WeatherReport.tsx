@@ -1,8 +1,8 @@
 import moment from "moment/moment";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import {
-  // WeatherFirstElementOfDayStore,
+  WeatherFirstElementOfDayStore,
   WeatherStore,
 } from "../store/WeatherStore";
 moment.locale("no");
@@ -14,11 +14,53 @@ const api = {
 };
 
 const WeatherReport: React.FC = () => {
-  const [weather] = useRecoilState(WeatherStore);
-  // const [shortWeatherReport] = useRecoilState(WeatherFirstElementOfDayStore);
+  const [weather, setWeather] = useRecoilState(WeatherStore);
+  const [, setWeatherFirstElementOfDayStore] = useRecoilState(WeatherFirstElementOfDayStore);
+  const [query, setQuery] = useState("oslo");
+
+  const fetchWeather = async (city: string) => {
+    const trimmed = city.trim();
+    if (!trimmed) return;
+
+    const response = await fetch(`${api.base}forecast?q=${encodeURIComponent(trimmed)}&units=metric&APPID=${api.key}`);
+    const result = await response.json();
+
+    const hasList = Array.isArray(result?.list) && result.list.length > 0;
+    if (!hasList) {
+      console.warn("Fant ingen værdata for", trimmed, result?.message);
+      return;
+    }
+
+    setWeatherFirstElementOfDayStore(
+      result.list.filter(function (_value: any, index: number) {
+        return index % 8 === 0;
+      })
+    );
+    setWeather(result);
+  };
+
+  useEffect(() => {
+    fetchWeather(query);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex h-full flex-col gap-3">
+      <div className="relative">
+        <input
+          type="text"
+          className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white outline-none transition focus:border-emerald-300/80 focus:bg-white/10"
+          placeholder="Velg lokasjon..."
+          onChange={(e) => setQuery(e.target.value)}
+          value={query}
+          onKeyDown={(event) => {
+            if (event.key !== "Enter") return;
+            fetchWeather(query);
+          }}
+        />
+        <span className="pointer-events-none absolute right-3 top-2 text-slate-400">⏎</span>
+      </div>
+
       {weather.city != null && weather.cnt > 0 ? (
         <div className="flex-1 space-y-3 overflow-hidden">
           <div className="grid h-full grid-cols-1 gap-3 overflow-y-auto">
