@@ -27,9 +27,10 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
         {
             var user = await _userManager.Users
-                .FirstOrDefaultAsync(x => x.Email == loginDto.Email);
+                .FirstOrDefaultAsync(x =>
+                    x.Email == loginDto.Email || x.UserName == loginDto.Email);
 
-            if (user == null) return Unauthorized();
+            if (user == null) return Unauthorized(CreateUnauthorizedUserObject());
 
             var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
 
@@ -38,7 +39,7 @@ namespace API.Controllers
                 return Ok(CreateUserObject(user));
             }
 
-            return Unauthorized(CreateUnauthorizedUserObject(user));
+            return Unauthorized(CreateUnauthorizedUserObject());
         }
 
         [HttpPost("register")]
@@ -79,6 +80,8 @@ namespace API.Controllers
             var user = await _userManager.Users
                 .FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
 
+            if (user == null) return Unauthorized(CreateUnauthorizedUserObject());
+
             return CreateUserObject(user);
         }
 
@@ -91,7 +94,7 @@ namespace API.Controllers
             Success = true,
         };
 
-        private UserDto CreateUnauthorizedUserObject(AppUser user)
+        private UserDto CreateUnauthorizedUserObject()
         {
             return new UserDto
             {

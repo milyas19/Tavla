@@ -40,8 +40,10 @@ export const HomePage: React.FC = () => {
     }
   }, []);
 
-  const handleLoginSubmit = async (formdata: any) => {
-    const loginInfo = Object.fromEntries(new FormData(formdata.target));
+  const handleLoginSubmit = async (formdata: React.FormEvent<HTMLFormElement>) => {
+    formdata.preventDefault();
+
+    const loginInfo = Object.fromEntries(new FormData(formdata.currentTarget));
     const loginObj = { ...loginInfo };
 
     const payload = {
@@ -102,7 +104,7 @@ export const HomePage: React.FC = () => {
           </p>
           <h1 className="text-3xl font-bold text-white">Velkommen tilbake</h1>
           <p className="text-sm text-slate-300 max-w-2xl">
-            Logg inn for å planlegge vakter, holde orden på rutetider og følge
+            Logg inn for å planlegge ansvar, holde orden på rutetider og følge
             værmeldingen i én samlet oversikt. Hele opplevelsen er nå redesignet
             med Tailwind for klarhet og ro.
           </p>
@@ -187,7 +189,7 @@ export const HomePage: React.FC = () => {
                 <h3 className="text-2xl font-semibold text-white">Aktiviteter</h3>
               </div>
               <span className="text-sm text-slate-300">
-                Synkroniserte tider og vakter
+                Synkroniserte tider og ansvar
               </span>
             </div>
             <div className="flex-1">

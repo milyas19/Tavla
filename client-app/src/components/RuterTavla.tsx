@@ -10,7 +10,6 @@ const api = {
 const RuterTavla: React.FC = () => {
   const [query, setQuery] = useState("");
   const [ruterResult, setRuterResult] = useRecoilState(RuterStore);
-  const [sourceId, setSourceId] = useState("");
 
   const search = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter") return;
@@ -27,7 +26,6 @@ const RuterTavla: React.FC = () => {
         console.warn("Fant ingen holdeplass for søket", trimmed);
         return;
       }
-      setSourceId(id);
 
       const boardRes = await fetch(`${api.ruterBoard}`, {
         method: "POST",
