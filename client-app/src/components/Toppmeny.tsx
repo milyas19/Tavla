@@ -87,12 +87,6 @@ export const Toppmeny: React.FC<IProps> = ({
     }
   };
 
-  //   const restOfData = () => {
-  //     weather.list.filter(function (obj) {
-  //       return firstElementOfDay.indexOf(obj) === -1;
-  //     });
-  //   };
-
   return (
     <div className="card-surface flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex items-center gap-4">
