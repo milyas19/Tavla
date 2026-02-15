@@ -66,11 +66,11 @@ const TableView: React.FC = () => {
 
   const AktivitetKort = (
     <div className="card-surface h-full flex flex-col">
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 overflow-y-auto pr-2" style={{ maxHeight: "30rem" }}>
+      <div className="grid gap-4 md:grid-cols-2 overflow-y-auto pr-2" style={{ maxHeight: "30rem" }}>
         {aktiviteterList?.map((data, i) => (
           <article
             key={i}
-            className="group relative flex flex-col gap-3 overflow-hidden rounded-xl border border-white/10 bg-white/5 p-4 shadow-sm transition hover:-translate-y-1 hover:border-emerald-200/50 hover:shadow-lg hover:shadow-emerald-400/10"
+            className="group relative flex flex-col gap-3 overflow-visible rounded-xl border border-white/10 bg-white/5 p-4 shadow-sm transition hover:-translate-y-1 hover:border-emerald-200/50 hover:shadow-lg hover:shadow-emerald-400/10"
             onClick={() => {
               setExpandedId(expandedId === data.id ? null : data.id);
               setEditItem(data);
@@ -109,7 +109,7 @@ const TableView: React.FC = () => {
               {data.beskrivelse || "Ingen beskrivelse"}
             </div>
 
-            <div className="mt-auto flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+            <div className="mt-auto flex flex-wrap items-center justify-center gap-2 border-t border-white/10 pt-3" onClick={(e) => e.stopPropagation()}>
               <button
                 className="inline-flex items-center gap-2 rounded-lg bg-emerald-400/15 px-3 py-2 text-emerald-100 transition hover:bg-emerald-400/25"
                 onClick={() => {

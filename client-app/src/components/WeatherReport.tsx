@@ -17,6 +17,7 @@ const WeatherReport: React.FC = () => {
   const [weather, setWeather] = useRecoilState(WeatherStore);
   const [, setWeatherFirstElementOfDayStore] = useRecoilState(WeatherFirstElementOfDayStore);
   const [query, setQuery] = useState("oslo");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const fetchWeather = async (city: string) => {
     const trimmed = city.trim();
@@ -37,12 +38,23 @@ const WeatherReport: React.FC = () => {
       })
     );
     setWeather(result);
+    setSelectedDate(result.list?.[0]?.dt_txt?.split(" ")?.[0] ?? null);
   };
 
   useEffect(() => {
     fetchWeather(query);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const dailySummary = Array.isArray(weather?.list)
+    ? weather.list.filter((_: any, index: number) => index % 8 === 0)
+    : [];
+
+  const detailedForDay = Array.isArray(weather?.list)
+    ? weather.list.filter((item: any) =>
+        selectedDate ? item.dt_txt?.startsWith(selectedDate) : false
+      )
+    : [];
 
   return (
     <div className="flex h-full flex-col gap-3">
@@ -62,38 +74,83 @@ const WeatherReport: React.FC = () => {
       </div>
 
       {weather.city != null && weather.cnt > 0 ? (
-        <div className="flex-1 space-y-3 overflow-hidden">
-          <div className="grid h-full grid-cols-1 gap-3 overflow-y-auto">
-            {weather?.list?.map((data: any, i: number) => (
-              <div
-                key={i}
-                className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3"
-              >
-                <div className="space-y-1 text-sm text-slate-200">
-                  <div className="text-white font-semibold">
-                    {moment(data.dt_txt).format("dddd").substring(0, 3)}
-                  </div>
-                  <div className="text-slate-300">
-                    {data.dt_txt.split(" ")[1].substring(0, 5)}
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <img
-                    className="h-10 w-10"
-                    src={`${api.baseImg}${data.weather[0].icon}.png`}
-                    alt="vær"
-                  />
-                  <div className="text-right text-sm text-slate-200">
+        <div className="flex-1 space-y-4 overflow-hidden">
+          <div className="space-y-2">
+            <p className="text-xs uppercase tracking-[0.2em] text-emerald-300/80">Daglig vær</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {dailySummary.map((data: any, i: number) => {
+                const dateKey = data.dt_txt?.split(" ")?.[0];
+                const isActive = dateKey === selectedDate;
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setSelectedDate(dateKey)}
+                    className={`flex items-center justify-between rounded-xl border px-3 py-2 text-left transition ${
+                      isActive
+                        ? "border-emerald-300/60 bg-emerald-400/10"
+                        : "border-white/10 bg-white/5 hover:border-emerald-300/30"
+                    }`}
+                  >
                     <div>
-                      {Math.round(data.main.temp_max)}° / {Math.round(data.main.temp_min)}°
+                      <div className="text-sm font-semibold text-white">
+                        {moment(data.dt_txt).format("dddd")}
+                      </div>
+                      <div className="text-xs text-slate-300">
+                        {moment(data.dt_txt).format("DD.MM")}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <img
+                        className="h-8 w-8"
+                        src={`${api.baseImg}${data.weather[0].icon}.png`}
+                        alt="vær"
+                      />
+                      <div className="text-right text-xs text-slate-200">
+                        <div>{Math.round(data.main.temp_max)}° / {Math.round(data.main.temp_min)}°</div>
+                        <div className="text-slate-400">Føles {Math.round(data.main.feels_like)}°</div>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-xs uppercase tracking-[0.2em] text-emerald-300/80">Hver 3. time</p>
+            <div className="grid h-full grid-cols-1 gap-2 overflow-y-auto">
+              {detailedForDay.map((data: any, i: number) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+                >
+                  <div className="space-y-1 text-sm text-slate-200">
+                    <div className="text-white font-semibold">
+                      {moment(data.dt_txt).format("dddd").substring(0, 3)}
                     </div>
                     <div className="text-slate-300">
-                      Føles som {Math.round(data.main.feels_like)}°
+                      {data.dt_txt.split(" ")[1].substring(0, 5)}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <img
+                      className="h-10 w-10"
+                      src={`${api.baseImg}${data.weather[0].icon}.png`}
+                      alt="vær"
+                    />
+                    <div className="text-right text-sm text-slate-200">
+                      <div>
+                        {Math.round(data.main.temp_max)}° / {Math.round(data.main.temp_min)}°
+                      </div>
+                      <div className="text-slate-300">
+                        Føles som {Math.round(data.main.feels_like)}°
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       ) : (
