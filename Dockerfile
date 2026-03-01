@@ -22,7 +22,7 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
-# Railway sets the PORT environment variable
-ENV ASPNETCORE_URLS=http://0.0.0.0:${PORT:-8080}
+# Railway injects PORT at runtime; use a shell entrypoint so variables are resolved
+ENV ASPNETCORE_ENVIRONMENT=Production
 
-ENTRYPOINT ["dotnet", "API.dll"]
+ENTRYPOINT /bin/sh -c "dotnet API.dll --urls http://0.0.0.0:${PORT:-8080}"
