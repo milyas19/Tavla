@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+**/node_modules/
+client-app/build/
+.git/
+.vs/
+*.user
+*.suo
