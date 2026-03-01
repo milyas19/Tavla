@@ -10,6 +10,7 @@ const api = {
 const RuterTavla: React.FC = () => {
   const [query, setQuery] = useState("Grorud");
   const [ruterResult, setRuterResult] = useRecoilState(RuterStore);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const fetchBoard = async (place: string) => {
     const trimmed = place.trim();
@@ -101,12 +102,30 @@ const RuterTavla: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const search = async (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key !== "Enter") return;
-    event.preventDefault();
+  useEffect(() => {
+    const trimmed = query.trim();
+    if (trimmed.length < 2) {
+      setSuggestions([]);
+      return;
+    }
 
-    await fetchBoard(query);
-  };
+    const timer = setTimeout(async () => {
+      try {
+        const geoRes = await fetch(`${api.base}${encodeURIComponent(trimmed)}&lang=no&layers=venue`);
+        const geoJson = await geoRes.json();
+        const items = Array.isArray(geoJson?.features) ? geoJson.features : [];
+        const names = items
+          .map((f: any) => f?.properties?.name || f?.properties?.label || f?.properties?.id)
+          .filter(Boolean)
+          .slice(0, 8);
+        setSuggestions(Array.from(new Set(names)));
+      } catch (err) {
+        console.warn("Kunne ikke hente forslag", err);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [query]);
 
   let uniqueStops = [
     ...new Set(
@@ -177,15 +196,43 @@ const RuterTavla: React.FC = () => {
   return (
     <div className="flex h-full flex-col gap-3">
       <div className="relative">
-        <input
-          type="text"
-          className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white outline-none transition focus:border-emerald-300/80 focus:bg-white/10"
-          placeholder="Søk etter holdeplass..."
-          onChange={(e) => setQuery(e.target.value)}
-          value={query}
-          onKeyDown={search}
-        />
-        <span className="pointer-events-none absolute right-3 top-2 text-slate-400">⏎</span>
+        <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white transition focus-within:border-emerald-300/80 focus-within:bg-white/10">
+          <span className="text-slate-400">🔎</span>
+          <input
+            type="text"
+            className="w-full bg-transparent text-white outline-none placeholder:text-slate-400"
+            placeholder="Søk etter holdeplass..."
+            onChange={(e) => setQuery(e.target.value)}
+            value={query}
+            onKeyDown={(event) => {
+              if (event.key !== "Enter") return;
+              event.preventDefault();
+              fetchBoard(query);
+              setSuggestions([]);
+            }}
+          />
+          <span className="text-slate-400">⏎</span>
+        </div>
+
+        {suggestions.length > 0 && (
+          <div className="absolute z-10 mt-2 w-full rounded-xl border border-white/10 bg-slate-950/95 p-2 shadow-xl backdrop-blur">
+            {suggestions.map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => {
+                  setQuery(item);
+                  fetchBoard(item);
+                  setSuggestions([]);
+                }}
+                className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-slate-200 transition hover:bg-white/10"
+              >
+                <span className="truncate">{item}</span>
+                <span className="text-xs text-emerald-300">Velg</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {ruterResult?.data?.stopPlace ? (

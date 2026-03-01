@@ -1,4 +1,5 @@
-﻿using Application.Command.OpprettAktivitet;
+﻿using Application.Command.OppdaterAktivitet;
+using Application.Command.OpprettAktivitet;
 using Application.Feature.Aktivitet.Command.SlettAktivitet;
 using Application.Query.HentAktivitetAvId;
 using Application.Query.HentAktiviteter;
@@ -57,6 +58,15 @@ namespace API.Controllers
                 return BadRequest("Data is not valid");
             }
             return Ok(aktivitet);
+        }
+
+        [HttpPut()]
+        public async Task<ActionResult<bool>> OppdaterAktivitet([FromBody] OppdaterAktivitetDto oppdaterAktivitetDto)
+        {
+            var response = await _mediator.Send(new OppdaterAktivitetCommand(oppdaterAktivitetDto));
+            if (response != null)
+                return Ok(true);
+            return BadRequest("Record not found in database");
         }
 
         [HttpDelete("{aktivitetId}")]

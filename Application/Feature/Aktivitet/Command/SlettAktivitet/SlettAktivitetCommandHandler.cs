@@ -1,5 +1,4 @@
-﻿using Entities;
-using MediatR;
+﻿using MediatR;
 using Persistence.Repository.TidsplanRepository;
 
 namespace Application.Feature.Aktivitet.Command.SlettAktivitet

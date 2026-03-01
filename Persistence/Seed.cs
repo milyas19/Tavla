@@ -43,34 +43,33 @@ namespace Persistence
                 await context.SaveChangesAsync();
             }
 
-            var personer = new List<Person>
+            var ønskedePersoner = new List<string>
             {
-                new Person { Id = 1, Navn = "Nadia" },
-                new Person { Id = 2, Navn = "Ilyas" },
-                new Person { Id = 3, Navn = "Amelia" },
-                new Person { Id = 4, Navn = "Imaan" },
+                "Nadia",
+                "Ilyas",
+                "Amelia",
+                "Imaan",
             };
 
-            var nyePersoner = personer
-                .Where(p => !context.Persons.Any(existing => existing.Id == p.Id))
-                .ToList();
-
-            if (nyePersoner.Any())
+            foreach (var navn in ønskedePersoner)
             {
-                await context.Persons.AddRangeAsync(nyePersoner);
-                await context.SaveChangesAsync();
+                if (!context.Persons.Any(p => p.Navn == navn))
+                {
+                    await context.Persons.AddAsync(new Person { Navn = navn });
+                }
             }
 
-            var eksisterendeVakt = context.Vakts.FirstOrDefault(v => v.Id == 1);
-            if (eksisterendeVakt != null)
+            var ønskedeVakter = new List<string>
             {
-                await context.Vakts.AddAsync(new Vakt { Id = 1, VaktType = "Ilyas" });
-                await context.Vakts.AddAsync(new Vakt { Id = 2, VaktType = "Nadia" });
-            }
-            else
+                "Ansvar",
+            };
+
+            foreach (var vaktType in ønskedeVakter)
             {
-                await context.Vakts.AddAsync(new Vakt { Id = 1, VaktType = "Ilyas" });
-                await context.Vakts.AddAsync(new Vakt { Id = 2, VaktType = "Nadia" });
+                if (!context.Vakts.Any(v => v.VaktType == vaktType))
+                {
+                    await context.Vakts.AddAsync(new Vakt { VaktType = vaktType });
+                }
             }
 
             await context.SaveChangesAsync();
