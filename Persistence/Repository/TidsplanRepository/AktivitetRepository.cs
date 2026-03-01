@@ -32,6 +32,14 @@ namespace Persistence.Repository.TidsplanRepository
             return tidsplan;
         }
 
+        public async Task<Tidsplan> OppdaterAktivitetAsync(Tidsplan tidsplan)
+        {
+            _dbContext.Update(tidsplan);
+            await _dbContext.SaveChangesAsync();
+            return tidsplan;
+        }
+
+
         public async Task<bool> SlettAktivitetAsync(int aktivitetId)
         {
             var aktivitet = await _dbContext.Tidsplans.Where(x => x.Id == aktivitetId).FirstOrDefaultAsync();

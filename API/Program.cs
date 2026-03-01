@@ -40,7 +40,7 @@ builder.Services.AddAutoMapper(typeof(AktivitetProfile));
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 {
-    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
 }));
 
 var app = builder.Build();
@@ -62,8 +62,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
-
-app.UseHttpsRedirection();
 
 app.UseCors("corsapp");
 

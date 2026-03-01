@@ -7,6 +7,7 @@ namespace Persistence.Repository.TidsplanRepository
         Task<Tidsplan> HentAktivitetByIdAsync(int aktivitetId);
         Task<List<Tidsplan>> HentAktiviteterAsync();
         Task<Tidsplan> OpprettAktivitetAsync(Tidsplan tidsplan);
+        Task<Tidsplan> OppdaterAktivitetAsync(Tidsplan tidsplan);
         Task<bool> SlettAktivitetAsync(int aktivitetId);
     }
 }

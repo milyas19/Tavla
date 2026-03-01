@@ -66,7 +66,7 @@ const TableView: React.FC = () => {
 
   const AktivitetKort = (
     <div className="card-surface h-full flex flex-col">
-      <div className="grid gap-4 md:grid-cols-2 overflow-y-auto pr-2" style={{ maxHeight: "30rem" }}>
+      <div className="grid gap-4 md:grid-cols-2 overflow-y-auto pr-2" style={{ maxHeight: "50rem" }}>
         {aktiviteterList?.map((data, i) => (
           <article
             key={i}
@@ -180,6 +180,7 @@ const TableView: React.FC = () => {
                     const mergedTil = moment(`${editState.dato} ${editState.til}`, "YYYY-MM-DD HH:mm").toISOString(true);
 
                     const payload = {
+                      Id: editItem.id,
                       PersonId: editState.personId,
                       VaktId: editState.vaktId,
                       Beskrivelse: editState.beskrivelse,
@@ -187,7 +188,7 @@ const TableView: React.FC = () => {
                       EndDato: mergedTil,
                     } as any;
 
-                    fetch(`${BaseApiUrl}/${editItem.id}`, {
+                    fetch(BaseApiUrl, {
                       method: "PUT",
                       headers: {
                         Accept: "application/json",

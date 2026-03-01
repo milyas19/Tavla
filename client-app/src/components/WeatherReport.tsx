@@ -1,5 +1,5 @@
 import moment from "moment/moment";
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import {
   WeatherFirstElementOfDayStore,
@@ -16,8 +16,10 @@ const api = {
 const WeatherReport: React.FC = () => {
   const [weather, setWeather] = useRecoilState(WeatherStore);
   const [, setWeatherFirstElementOfDayStore] = useRecoilState(WeatherFirstElementOfDayStore);
-  const [query, setQuery] = useState("oslo");
+  const [query, setQuery] = useState("Oslo, NO");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const suggestionTimer = useRef<number | null>(null);
 
   const fetchWeather = async (city: string) => {
     const trimmed = city.trim();
@@ -41,10 +43,42 @@ const WeatherReport: React.FC = () => {
     setSelectedDate(result.list?.[0]?.dt_txt?.split(" ")?.[0] ?? null);
   };
 
-  useEffect(() => {
-    fetchWeather(query);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+
+    const trimmed = value.trim();
+    if (trimmed.length < 2) {
+      setSuggestions([]);
+      if (suggestionTimer.current) {
+        window.clearTimeout(suggestionTimer.current);
+        suggestionTimer.current = null;
+      }
+      return;
+    }
+
+    if (suggestionTimer.current) {
+      window.clearTimeout(suggestionTimer.current);
+    }
+
+    suggestionTimer.current = window.setTimeout(async () => {
+      try {
+        const geoRes = await fetch(
+          `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(trimmed)}&limit=5&appid=${api.key}`
+        );
+        const geoJson = await geoRes.json();
+        const names = (Array.isArray(geoJson) ? geoJson : [])
+          .map((item: any) => {
+            const state = item?.state ? `, ${item.state}` : "";
+            const country = item?.country ? `, ${item.country}` : "";
+            return `${item?.name ?? ""}${state}${country}`.trim();
+          })
+          .filter(Boolean);
+        setSuggestions(Array.from(new Set(names)));
+      } catch (err) {
+        console.warn("Kunne ikke hente byforslag", err);
+      }
+    }, 300);
+  };
 
   const dailySummary = Array.isArray(weather?.list)
     ? weather.list.filter((_: any, index: number) => index % 8 === 0)
@@ -59,18 +93,42 @@ const WeatherReport: React.FC = () => {
   return (
     <div className="flex h-full flex-col gap-3">
       <div className="relative">
-        <input
-          type="text"
-          className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white outline-none transition focus:border-emerald-300/80 focus:bg-white/10"
-          placeholder="Velg lokasjon..."
-          onChange={(e) => setQuery(e.target.value)}
-          value={query}
-          onKeyDown={(event) => {
-            if (event.key !== "Enter") return;
-            fetchWeather(query);
-          }}
-        />
-        <span className="pointer-events-none absolute right-3 top-2 text-slate-400">⏎</span>
+        <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white transition focus-within:border-emerald-300/80 focus-within:bg-white/10">
+          <span className="text-slate-400">🔎</span>
+          <input
+            type="text"
+            className="w-full bg-transparent text-white outline-none placeholder:text-slate-400"
+            placeholder="Velg lokasjon..."
+            onChange={(e) => handleQueryChange(e.target.value)}
+            value={query}
+            onKeyDown={(event) => {
+              if (event.key !== "Enter") return;
+              fetchWeather(query);
+              setSuggestions([]);
+            }}
+          />
+          <span className="text-slate-400">⏎</span>
+        </div>
+
+        {suggestions.length > 0 && (
+          <div className="absolute z-10 mt-2 w-full rounded-xl border border-white/10 bg-slate-950/95 p-2 shadow-xl backdrop-blur">
+            {suggestions.map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => {
+                  setQuery(item);
+                  fetchWeather(item);
+                  setSuggestions([]);
+                }}
+                className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-slate-200 transition hover:bg-white/10"
+              >
+                <span className="truncate">{item}</span>
+                <span className="text-xs text-emerald-300">Velg</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {weather.city != null && weather.cnt > 0 ? (
