@@ -18,7 +18,9 @@ namespace API.Extensions
                 opt.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<TidsplanContext>();
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
+            var tokenKey = config["TokenKey"] 
+                ?? throw new InvalidOperationException("TokenKey is not configured. Set the 'TokenKey' environment variable.");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
